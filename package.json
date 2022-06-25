@@ -1,0 +1,23 @@
+{
+  "name": "talk-a-tive",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AngelGO23/MERN-ChatApp.git"
+  },
+  "author": "Angel G Ortiz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AngelGO23/MERN-ChatApp/issues"
+  },
+  "homepage": "https://github.com/AngelGO23/MERN-ChatApp#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
