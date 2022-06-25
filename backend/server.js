@@ -1,14 +1,23 @@
 import express from "express";
 import { chats } from "./data/data.js";
-
+import dotenv from "dotenv";
 const app = express();
 
 app.get('/', (req, res) => {
     res.send("Api is running");
-})
+});
 
 app.get('/api/chat', (req, res) => {
     res.send(chats);
-})
-app.listen(5000, console.log("Started server on port 5000"));
+});
+
+app.get("/api/chat/:id", (req, res) => {
+    // console.log(req.params.id);
+    const singleChat = chats.find((c) => c._id === req.params.id);
+    res.send(singleChat);
+});
+
+const PORT = process.env.PORT || 5000
+
+app.listen(PORT, console.log("Started server on port 5000"));
 
