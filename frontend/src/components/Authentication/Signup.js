@@ -1,5 +1,7 @@
-import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, VStack } from '@chakra-ui/react'
+import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, Toast, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
+import { useToast } from '@chakra-ui/react';
+
 
 const Signup = () => {
     const [name, setName] = useState();
@@ -8,14 +10,55 @@ const Signup = () => {
     const [confirmPassword, setConfirmPassword] = useState();
     const [pic, setPic] = useState();
     const [show, setShow] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const toast = useToast()
+
 
     const handleClick = () => {
         setShow(!show);
     }
 
     const postDetails = (pics) => {
-
-    }
+        setLoading(true);
+        if (pics === undefined) {
+            toast({
+                title: 'Account created.',
+                description: "We've created your account for you.",
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            });
+            return;
+        }
+        if (pics.type === "image/jpeg" || pics.type === "image/png") {
+            const data = new FormData();
+            data.append("file", pics);
+            data.append("upload_preset", "chat-app");
+            data.append("cloud_name", "dqh52vcxw");
+            fetch("https://api.cloudinary.com/v1_1/dqh52vcxw/image/upload", {
+                method: 'post',
+                body: data,
+            })
+                .then((res) => res.json())
+                .then(data => {
+                    setPic(data.url.toString());
+                    console.log(data.url.toString());
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    setLoading(false);
+                })
+        } else {
+            toast({
+                title: "Please select an image!",
+                status: 'warning',
+                duration: 5000,
+                isClosable: true,
+                position: "bottom",
+            });
+        }
+    };
 
     const submitHandler = () => {
 
@@ -81,6 +124,7 @@ const Signup = () => {
                 width='100%'
                 style={{ marginTop: 15 }}
                 onClick={submitHandler}
+                isLoading={loading}
             >
                 Sign Up
             </Button>
