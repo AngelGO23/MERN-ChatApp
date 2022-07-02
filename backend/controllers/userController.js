@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler')
-const User = require('../models/useModel');
+const User = require('../models/userModel');
 const generateToken = require('../config/generateToken')
 
 
@@ -60,6 +60,23 @@ const authUser = asyncHandler(async (req, res) => {
     } else {
         throw new Error("invalid credentials")
     }
+});
+
+
+const allUsers = asyncHandler(async (req, res) => {
+    const keyword = req.query.search
+        ? {
+            $or: [
+                { name: { $regex: req.query.search, $options: "i" } },
+                { email: { $regex: req.query.search, $options: "i" } },
+            ]
+        }
+        : {};
+
+    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+    res.send(users);
+
+
 })
 
-module.exports = { registerUser, authUser }
+module.exports = { registerUser, authUser, allUsers }

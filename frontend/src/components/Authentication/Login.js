@@ -1,27 +1,28 @@
-import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, Toast, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react'
-import { useToast } from "@chakra-ui/react"
-import axios from 'axios';
+import { Button } from "@chakra-ui/button";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
+import { VStack } from "@chakra-ui/layout";
+import { useState } from "react";
+import axios from "axios";
+import { useToast } from "@chakra-ui/react";
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
 
+    const [show, setShow] = useState(false);
+    const handleClick = () => setShow(!show);
+    const toast = useToast();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
-    const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
-    const toast = useToast();
-    const history = useNavigate();
 
-    const handleClick = () => {
-        setShow(!show);
-    }
+    const history = useNavigate();
 
     const submitHandler = async () => {
         setLoading(true);
         if (!email || !password) {
             toast({
-                title: "Please fill all fields",
+                title: "Please Fill all the Feilds",
                 status: "warning",
                 duration: 5000,
                 isClosable: true,
@@ -31,59 +32,59 @@ const Login = () => {
             return;
         }
 
+        // console.log(email, password);
         try {
             const config = {
                 headers: {
                     "Content-type": "application/json",
                 },
             };
+
             const { data } = await axios.post(
                 "/api/user/login",
                 { email, password },
                 config
             );
 
+            // console.log(JSON.stringify(data));
             toast({
-                title: "Login Succesful",
-                status: "succes",
+                title: "Login Successful",
+                status: "success",
                 duration: 5000,
                 isClosable: true,
                 position: "bottom",
             });
             localStorage.setItem("userInfo", JSON.stringify(data));
             setLoading(false);
-            history.push("/chats");
-
+            history("/chats");
         } catch (error) {
             toast({
-                title: "Error ocurred!",
-                status: "warning",
+                title: "Error Occured!",
+                description: error.response.data.message,
+                status: "error",
                 duration: 5000,
                 isClosable: true,
                 position: "bottom",
             });
             setLoading(false);
         }
-
-    }
-
+    };
     return (
-        <VStack spacing='5px' color='black'>
-
+        <VStack spacing='10px'>
             <FormControl id='email' isRequired>
-                <FormLabel>Email</FormLabel>
+                < FormLabel > Email Adress</FormLabel >
                 <Input
                     placeholder='Enter Your Email'
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-            </FormControl>
+            </FormControl >
             <FormControl id='Password' isRequired>
                 <FormLabel>Password</FormLabel>
                 <InputGroup>
                     <Input
                         type={show ? 'text' : 'password'}
-                        placeholder='Password'
+                        placeholder='Enter Password'
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
@@ -113,7 +114,7 @@ const Login = () => {
                 }}>
                 Get Guest User Credentials
             </Button>
-        </VStack>
+        </VStack >
     )
 }
 
